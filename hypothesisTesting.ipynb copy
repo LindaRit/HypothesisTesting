@@ -1,0 +1,368 @@
+{
+ "cells": [
+  {
+   "cell_type": "code",
+   "execution_count": 19,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# importing libraries\n",
+    "import numpy as np\n",
+    "import pandas as pd\n",
+    "import matplotlib.pyplot as plt\n",
+    "import seaborn as sns\n",
+    "from scipy.stats import ttest_1samp, ttest_rel, ttest_ind"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 2,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "Ttest_1sampResult(statistic=-3.1575991083233874, pvalue=0.0021089101118716004)"
+      ]
+     },
+     "execution_count": 2,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "# takes a dataset and a constant for comparison and returns the test statistic and the p value for a 2 sided test.\n",
+    "patients = np.random.normal(5.1, 1.6, 100)\n",
+    "ttest_1samp(patients, 5.7)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Example: Matched Pair. \n",
+    "\n",
+    "The data in the two samples is dependent. In the data we are studying the blood pressure before and after the treatment."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 4,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/html": [
+       "<div>\n",
+       "<style scoped>\n",
+       "    .dataframe tbody tr th:only-of-type {\n",
+       "        vertical-align: middle;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe tbody tr th {\n",
+       "        vertical-align: top;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe thead th {\n",
+       "        text-align: right;\n",
+       "    }\n",
+       "</style>\n",
+       "<table border=\"1\" class=\"dataframe\">\n",
+       "  <thead>\n",
+       "    <tr style=\"text-align: right;\">\n",
+       "      <th></th>\n",
+       "      <th>before</th>\n",
+       "      <th>after</th>\n",
+       "    </tr>\n",
+       "  </thead>\n",
+       "  <tbody>\n",
+       "    <tr>\n",
+       "      <th>0</th>\n",
+       "      <td>136.713072</td>\n",
+       "      <td>92.432965</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>1</th>\n",
+       "      <td>134.735618</td>\n",
+       "      <td>105.022643</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>2</th>\n",
+       "      <td>127.529115</td>\n",
+       "      <td>82.242766</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>3</th>\n",
+       "      <td>144.527126</td>\n",
+       "      <td>93.607172</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>4</th>\n",
+       "      <td>124.214720</td>\n",
+       "      <td>103.212223</td>\n",
+       "    </tr>\n",
+       "  </tbody>\n",
+       "</table>\n",
+       "</div>"
+      ],
+      "text/plain": [
+       "       before       after\n",
+       "0  136.713072   92.432965\n",
+       "1  134.735618  105.022643\n",
+       "2  127.529115   82.242766\n",
+       "3  144.527126   93.607172\n",
+       "4  124.214720  103.212223"
+      ]
+     },
+     "execution_count": 4,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "blood_pressure = pd.read_csv('blood_pressure.csv')\n",
+    "blood_pressure.head()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 7,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "Ttest_relResult(statistic=-27.291841767560236, pvalue=7.303035069608042e-48)"
+      ]
+     },
+     "execution_count": 7,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "ttest_rel(blood_pressure.after, blood_pressure.before)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 8,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "Ttest_1sampResult(statistic=-27.291841767560236, pvalue=7.303035069608042e-48)"
+      ]
+     },
+     "execution_count": 8,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "ttest_1samp(blood_pressure.after-blood_pressure.before, 0)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 17,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "<matplotlib.axes._subplots.AxesSubplot at 0x1a1f381b00>"
+      ]
+     },
+     "execution_count": 17,
+     "metadata": {},
+     "output_type": "execute_result"
+    },
+    {
+     "data": {
+      "image/png": "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\n",
+      "text/plain": [
+       "<Figure size 432x288 with 1 Axes>"
+      ]
+     },
+     "metadata": {
+      "needs_background": "light"
+     },
+     "output_type": "display_data"
+    }
+   ],
+   "source": [
+    "sns.boxplot(data = blood_pressure)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Indipentent Samples\n",
+    "\n",
+    "For two groups where we cannot match the rows to one another, for example men and women. In this case transactions from a website with different interfaces (a, b)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 18,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/html": [
+       "<div>\n",
+       "<style scoped>\n",
+       "    .dataframe tbody tr th:only-of-type {\n",
+       "        vertical-align: middle;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe tbody tr th {\n",
+       "        vertical-align: top;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe thead th {\n",
+       "        text-align: right;\n",
+       "    }\n",
+       "</style>\n",
+       "<table border=\"1\" class=\"dataframe\">\n",
+       "  <thead>\n",
+       "    <tr style=\"text-align: right;\">\n",
+       "      <th></th>\n",
+       "      <th>a</th>\n",
+       "      <th>b</th>\n",
+       "    </tr>\n",
+       "  </thead>\n",
+       "  <tbody>\n",
+       "    <tr>\n",
+       "      <th>0</th>\n",
+       "      <td>0.27</td>\n",
+       "      <td>13.61</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>1</th>\n",
+       "      <td>6.08</td>\n",
+       "      <td>21.53</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>2</th>\n",
+       "      <td>13.74</td>\n",
+       "      <td>9.23</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>3</th>\n",
+       "      <td>9.70</td>\n",
+       "      <td>5.36</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>4</th>\n",
+       "      <td>7.00</td>\n",
+       "      <td>12.90</td>\n",
+       "    </tr>\n",
+       "  </tbody>\n",
+       "</table>\n",
+       "</div>"
+      ],
+      "text/plain": [
+       "       a      b\n",
+       "0   0.27  13.61\n",
+       "1   6.08  21.53\n",
+       "2  13.74   9.23\n",
+       "3   9.70   5.36\n",
+       "4   7.00  12.90"
+      ]
+     },
+     "execution_count": 18,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "ab_test = pd.read_csv('ab_test.csv')\n",
+    "ab_test.head()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 20,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "Ttest_indResult(statistic=-2.637533181209767, pvalue=0.009713140852447347)"
+      ]
+     },
+     "execution_count": 20,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "ttest_ind(ab_test.a, ab_test.b, equal_var=True)  # if we don't assume equal variance the test will be more robust"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 22,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "<matplotlib.axes._subplots.AxesSubplot at 0x1a1f523fd0>"
+      ]
+     },
+     "execution_count": 22,
+     "metadata": {},
+     "output_type": "execute_result"
+    },
+    {
+     "data": {
+      "image/png": "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\n",
+      "text/plain": [
+       "<Figure size 432x288 with 1 Axes>"
+      ]
+     },
+     "metadata": {
+      "needs_background": "light"
+     },
+     "output_type": "display_data"
+    }
+   ],
+   "source": [
+    "sns.boxplot(data = ab_test)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": []
+  }
+ ],
+ "metadata": {
+  "kernelspec": {
+   "display_name": "Python 3",
+   "language": "python",
+   "name": "python3"
+  },
+  "language_info": {
+   "codemirror_mode": {
+    "name": "ipython",
+    "version": 3
+   },
+   "file_extension": ".py",
+   "mimetype": "text/x-python",
+   "name": "python",
+   "nbconvert_exporter": "python",
+   "pygments_lexer": "ipython3",
+   "version": "3.6.8"
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 2
+}
